@@ -1,6 +1,5 @@
 import cv2
 from ultralytics import YOLO
-
 yolo = YOLO('yolov8s.pt')
 videoCap = cv2.VideoCapture(0)
 
@@ -21,10 +20,9 @@ while True:
 
     for result in results:
         classes_names = result.names
-
         # iterate over each box
         for box in result.boxes:
-            # check for confidence, needs to be greater than 40%
+            # confidence over 40%
             if box.conf[0] > 0.4:
                 # steps to draw the rectangle, from finding the box, converting to int, setting the class name, coloring, then drawing the rectangle with the name and confidence level.
                 [x1, y1, x2, y2] = box.xyxy[0]
@@ -33,15 +31,12 @@ while True:
                 class_name = classes_names[cls]
                 colour = getColours(cls)
                 cv2.rectangle(frame, (x1, y1), (x2, y2), colour, 2)
-                cv2.putText(frame, f'{classes_names[int(box.cls[0])]} {box.conf[0]:.2f}', (x1, y1), cv2.FONT_HERSHEY_SIMPLEX, 1, colour, 2)
-                
+                cv2.putText(frame, f'{classes_names[int(box.cls[0])]} {box.conf[0]:.2f}', (x1, y1), cv2.FONT_HERSHEY_SIMPLEX, 1, colour, 2)  
     # show the image
     cv2.imshow('frame', frame)
-
-    # break the loop if 'q' is pressed
+    # break the loop with q
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
-
-# release the video capture and destroy all windows
+#end program
 videoCap.release()
 cv2.destroyAllWindows()
